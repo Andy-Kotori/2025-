@@ -1,3 +1,4 @@
+:wq
 //
 // Created by hp on 24-10-9.
 //
@@ -71,6 +72,8 @@ void RC_Ctl_t::RemoteDataProcess(uint8_t *pData)
 void receive() {
     RC_CtrlData.RemoteDataProcess(rxData);
 }
+
+
 
 // void transmit() {
 //     HAL_UART_Transmit_IT(&huart6, RC_CtrlData.output, sizeof(RC_CtrlData.output));

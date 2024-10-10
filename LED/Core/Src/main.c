@@ -22,13 +22,12 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-#include<string.h>
-#include "stm32f4xx_hal_uart.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-uint8_t rxBuffer[15];
-uint8_t txBuffer[15];
+uint8_t rxBuffer[36u];
+uint8_t rx[15];
+uint8_t rxData[36u];
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -60,24 +59,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
-  if (huart == &huart6) {
 
-    // 复制接收到的数据到发送缓冲区
-    memcpy(txBuffer, rxBuffer, sizeof(rxBuffer));
-
-    HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, SET);
-
-    HAL_TIM_Base_Start_IT(&htim1);
-
-    // 通过DMA发送数据
-    HAL_UART_Transmit_DMA(&huart6, txBuffer, sizeof(txBuffer));
-    HAL_UART_Receive_DMA(&huart6, rxBuffer, sizeof(rxBuffer));
-
-
-    HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, SET);
-  }
-}
 /* USER CODE END 0 */
 
 /**
@@ -113,11 +95,13 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM6_Init();
   MX_USART6_UART_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   // HAL_TIM_Base_Start_IT(&htim1);
   // HAL_TIM_Base_Start_IT(&htim6);
   // HAL_TIM_PWM_Start_IT(&htim1, TIM_CHANNEL_2);
-  HAL_UART_Receive_DMA(&huart6, rxBuffer, sizeof(rxBuffer));
+  HAL_UART_Receive_DMA(&huart6, rx, sizeof(rx));
+  HAL_UART_Receive_DMA(&huart1, rxBuffer, 18u);
   // HAL_UART_Receive_IT(&huart6, rxBuffer, sizeof(rxBuffer));
   /* USER CODE END 2 */
 

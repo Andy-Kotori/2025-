@@ -7,9 +7,11 @@
 #include "usart.h"
 #include "stm32f4xx_hal.h"
 #include<string.h>
+#include "remote_head.h"
 
-extern uint8_t rxBuffer[15];
-extern uint8_t txBuffer[15];
+extern uint8_t rxBuffer[36u];
+extern uint8_t rx[15];
+extern uint8_t rxData[36u];
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     // if (htim->Instance == TIM1 && flag == 0) {
@@ -24,7 +26,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     // }
     if (htim->Instance == TIM1) {
         HAL_GPIO_TogglePin(LED_G_GPIO_Port, LED_G_Pin);
-        HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, RESET);
+        HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, GPIO_PIN_RESET);
     }
 }
 
@@ -80,6 +82,26 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 //
 //     }
 // }
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+    if (huart == &huart1) {
+
+        HAL_TIM_Base_Start_IT(&htim1);
+        // 复制接收到的数据到发送缓冲区
+        memcpy(rxData, rxBuffer, sizeof(rxBuffer));
+        receive();
+        HAL_UART_Receive_DMA(&huart1, rxBuffer, 18u);
+
+        // HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_SET);
+
+    }
+
+    if (huart == &huart6) {
+        // HAL_TIM_Base_Start_IT(&htim1);
+        HAL_UART_Transmit_DMA(&huart6, rx, sizeof(rx));
+        HAL_UART_Receive_DMA(&huart6, rx, sizeof(rx));
+    }
+}
 
 
 

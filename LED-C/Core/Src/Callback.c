@@ -33,13 +33,23 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 //     }
 // }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-    if (huart == &huart1) {
+// void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+//     if (huart == &huart1) {
+//
+//         memcpy(txBuffer, rxBuffer, sizeof(rxBuffer));
+//         HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, SET);
+//         // 将接收到的数据发送回去
+//         HAL_UART_Transmit_IT(&huart1, txBuffer, sizeof(txBuffer));
+//         HAL_UART_Receive_IT(&huart1, rxBuffer, sizeof(rxBuffer));
+//     }
+// }
 
-        memcpy(txBuffer, rxBuffer, sizeof(rxBuffer));
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+    if (huart->Instance == USART1) {
         HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, SET);
-        // 将接收到的数据发送回去
-        HAL_UART_Transmit_IT(&huart1, txBuffer, sizeof(txBuffer));
-        HAL_UART_Receive_IT(&huart1, rxBuffer, sizeof(rxBuffer));
+        HAL_UART_Transmit_DMA(&huart1, rxBuffer, sizeof(rxBuffer));
+        // 处理接收到的数据
+        // 可以再次启动DMA接收，以实现持续接收
+        HAL_UART_Receive_DMA(&huart1, rxBuffer, sizeof(rxBuffer));
     }
 }

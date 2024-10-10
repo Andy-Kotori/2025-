@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -89,6 +90,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_TIM6_Init();
   MX_TIM5_Init();
   MX_USART1_UART_Init();
@@ -96,8 +98,8 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim6);
   HAL_TIM_Base_Start_IT(&htim5);
   HAL_TIM_PWM_Start_IT(&htim5, TIM_CHANNEL_2);
-  HAL_UART_Receive_IT(&huart1, rxBuffer, sizeof(rxBuffer));
-
+  // HAL_UART_Receive_IT(&huart1, rxBuffer, sizeof(rxBuffer));
+  HAL_UART_Receive_DMA(&huart1, rxBuffer, sizeof(rxBuffer));
   /* USER CODE END 2 */
 
   /* Infinite loop */

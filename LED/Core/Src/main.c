@@ -61,7 +61,27 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+// void sendMotorSpeed(uint32_t id, int16_t current) {
+//   CAN_TxHeaderTypeDef TxHeader;
+//   uint8_t TxData[8] = { 0 };
+//   uint32_t TxMailbox;
+//
+//   // 设置CAN标识符
+//   TxHeader.StdId = id; // 使用0x200或0x1FF
+//   TxHeader.IDE = CAN_ID_STD;
+//   TxHeader.RTR = CAN_RTR_DATA;
+//   TxHeader.DLC = 8;
+//
+//   // 设置目标转矩电流
+//   TxData[0] = (current >> 8) & 0xFF; // 高8位
+//   TxData[1] = current & 0xFF; // 低8位
+//
+//   // 将消息添加到发送邮箱
+//   if (HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData, &TxMailbox) != HAL_OK) {
+//     // 错误处理
+//     Error_Handler();
+//   }
+// }
 /* USER CODE END 0 */
 
 /**
@@ -123,6 +143,9 @@ int main(void)
   HAL_CAN_Start(&hcan1);
 
   HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
+
+
+  HAL_CAN_ActivateNotification(&hcan1, CAN_IT_TX_MAILBOX_EMPTY);
   /* USER CODE END 2 */
 
   /* Infinite loop */

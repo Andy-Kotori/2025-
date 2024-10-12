@@ -59,6 +59,7 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define button_Pin GPIO_PIN_2
 #define button_GPIO_Port GPIOB
+#define button_EXTI_IRQn EXTI2_IRQn
 #define LED_R_Pin GPIO_PIN_11
 #define LED_R_GPIO_Port GPIOE
 #define LED_G_Pin GPIO_PIN_14

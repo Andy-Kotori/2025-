@@ -1,6 +1,8 @@
 //
 // Created by hp on 24-10-3.
 //
+#include <can.h>
+
 #include "gpio.h"
 #include "main.h"
 #include "tim.h"
@@ -12,6 +14,9 @@
 extern uint8_t rxBuffer[36u];
 extern uint8_t rx[15];
 extern uint8_t rxData[36u];
+extern uint8_t aData[8];
+CAN_RxHeaderTypeDef pHeader;
+float values[4];
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     // if (htim->Instance == TIM1 && flag == 0) {
@@ -83,23 +88,46 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 //     }
 // }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-    if (huart == &huart1) {
+// // 遥控器DBUS
+// void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+//     if (huart == &huart1) {
+//
+//         HAL_TIM_Base_Start_IT(&htim1);
+//         // 复制接收到的数据到发送缓冲区
+//         memcpy(rxData, rxBuffer, sizeof(rxBuffer));
+//         receive();
+//         HAL_UART_Receive_DMA(&huart1, rxBuffer, 18u);
+//
+//         // HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_SET);
+//
+//     }
+//
+//     if (huart == &huart6) {
+//         // HAL_TIM_Base_Start_IT(&htim1);
+//         HAL_UART_Transmit_DMA(&huart6, rx, sizeof(rx));
+//         HAL_UART_Receive_DMA(&huart6, rx, sizeof(rx));
+//     }
+// }
 
+float linearMapping(uint16_t in, uint16_t in_min, uint16_t in_max, uint16_t out_min, uint16_t out_max){
+    float k=((float)(out_max-out_min))/((float)(in_max-in_min));    // 计算斜率
+    return (float)(out_min)+k*((float)(in-in_min));
+}
+
+void canRxMsgCallback_v1(uint8_t rx_data[8]) {
+    uint16_t ecd = (uint16_t)rx_data[0] << 8 | (uint16_t)rx_data[1];
+    float ecd_angle_ = values[0] = linearMapping(ecd, 0, 8191, 0, 360);
+    float rotate_speed_ = values[1] = (float)(int16_t)((uint16_t)rx_data[2] << 8 | (uint16_t)rx_data[3]);
+    float current_ = values[2] = (float)(int16_t)((uint16_t)rx_data[4] << 8 | (uint16_t)rx_data[5]);
+    float temp_ = values[3] = (float)(int8_t)rx_data[6];
+}
+
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
+    if (hcan == &hcan1) {
         HAL_TIM_Base_Start_IT(&htim1);
-        // 复制接收到的数据到发送缓冲区
-        memcpy(rxData, rxBuffer, sizeof(rxBuffer));
-        receive();
-        HAL_UART_Receive_DMA(&huart1, rxBuffer, 18u);
 
-        // HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_SET);
-
-    }
-
-    if (huart == &huart6) {
-        // HAL_TIM_Base_Start_IT(&htim1);
-        HAL_UART_Transmit_DMA(&huart6, rx, sizeof(rx));
-        HAL_UART_Receive_DMA(&huart6, rx, sizeof(rx));
+        HAL_CAN_GetRxMessage(&hcan1,CAN_RX_FIFO0, &pHeader, aData);
+        canRxMsgCallback_v1(aData);
     }
 }
 

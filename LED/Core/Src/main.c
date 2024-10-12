@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "can.h"
 #include "dma.h"
 #include "tim.h"
 #include "usart.h"
@@ -28,6 +29,7 @@
 uint8_t rxBuffer[36u];
 uint8_t rx[15];
 uint8_t rxData[36u];
+uint8_t aData[8];
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -96,13 +98,31 @@ int main(void)
   MX_TIM6_Init();
   MX_USART6_UART_Init();
   MX_USART1_UART_Init();
+  MX_CAN1_Init();
   /* USER CODE BEGIN 2 */
   // HAL_TIM_Base_Start_IT(&htim1);
   // HAL_TIM_Base_Start_IT(&htim6);
   // HAL_TIM_PWM_Start_IT(&htim1, TIM_CHANNEL_2);
-  HAL_UART_Receive_DMA(&huart6, rx, sizeof(rx));
-  HAL_UART_Receive_DMA(&huart1, rxBuffer, 18u);
+  // HAL_UART_Receive_DMA(&huart6, rx, sizeof(rx));
+  // HAL_UART_Receive_DMA(&huart1, rxBuffer, 18u);
   // HAL_UART_Receive_IT(&huart6, rxBuffer, sizeof(rxBuffer));
+  CAN_FilterTypeDef canFilterConfig;
+  // CAN滤波器配置
+  canFilterConfig.FilterBank = 0; // 选择滤波器银行
+  canFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK; // 设置滤波器模式为ID掩码模式
+  canFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT; // 设置滤波器规模为32位
+  canFilterConfig.FilterIdHigh = 0x0000; // 设置滤波器ID高字节
+  canFilterConfig.FilterIdLow = 0x0000; // 设置滤波器ID低字节
+  canFilterConfig.FilterMaskIdHigh = 0x0000; // 设置滤波器掩码高字节
+  canFilterConfig.FilterMaskIdLow = 0x0000; // 设置滤波器掩码低字节
+  canFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0; // 将滤波器分配给FIFO0
+  canFilterConfig.FilterActivation = ENABLE; // 启用滤波器
+
+  HAL_CAN_ConfigFilter(&hcan1, &canFilterConfig);
+
+  HAL_CAN_Start(&hcan1);
+
+  HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
   /* USER CODE END 2 */
 
   /* Infinite loop */

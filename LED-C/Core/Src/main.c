@@ -19,13 +19,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "dma.h"
+#include "spi.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "../Inc/imu.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -59,6 +60,8 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
 uint8_t rxBuffer[10];
 uint8_t txBuffer[10];
+float ACC[3];
+float GYRO[3];
 /* USER CODE END 0 */
 
 /**
@@ -94,12 +97,17 @@ int main(void)
   MX_TIM6_Init();
   MX_TIM5_Init();
   MX_USART1_UART_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim6);
   HAL_TIM_Base_Start_IT(&htim5);
   HAL_TIM_PWM_Start_IT(&htim5, TIM_CHANNEL_2);
   // HAL_UART_Receive_IT(&huart1, rxBuffer, sizeof(rxBuffer));
-  HAL_UART_Receive_DMA(&huart1, rxBuffer, sizeof(rxBuffer));
+  // HAL_UART_Receive_DMA(&huart1, rxBuffer, sizeof(rxBuffer));
+  BMI088_Init();
+  BMI088_accel_write();
+  BMI088_ACCEL_MODE();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -107,6 +115,9 @@ int main(void)
   while (1)
   {
     // HAL_UART_Transmit_IT(&huart1, "txBuffer", 6);
+    BMI088_accel_read();
+    BMI088_gyro_read();
+    HAL_Delay(50);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

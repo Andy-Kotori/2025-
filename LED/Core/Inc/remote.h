@@ -72,6 +72,4 @@ private:
     void Solve_Raw_Data();
 };
 
-
-
 #endif //REMOTE_H

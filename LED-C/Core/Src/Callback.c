@@ -7,6 +7,8 @@
 #include "usart.h"
 #include<string.h>
 
+#include "spi.h"
+
 extern uint8_t rxBuffer[10];
 extern uint8_t txBuffer[10];
 
@@ -44,12 +46,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 //     }
 // }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-    if (huart->Instance == USART1) {
-        HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, SET);
-        HAL_UART_Transmit_DMA(&huart1, rxBuffer, sizeof(rxBuffer));
-        // 处理接收到的数据
-        // 可以再次启动DMA接收，以实现持续接收
-        HAL_UART_Receive_DMA(&huart1, rxBuffer, sizeof(rxBuffer));
-    }
-}
+// void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+//     if (huart->Instance == USART1) {
+//         HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, SET);
+//         HAL_UART_Transmit_DMA(&huart1, rxBuffer, sizeof(rxBuffer));
+//         // 处理接收到的数据
+//         // 可以再次启动DMA接收，以实现持续接收
+//         HAL_UART_Receive_DMA(&huart1, rxBuffer, sizeof(rxBuffer));
+//     }
+// }

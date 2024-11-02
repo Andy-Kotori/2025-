@@ -2,8 +2,9 @@
 // Created by hp on 24-10-9.
 //
 
-#include "remote.h"
-#include "remote_head.h"
+#include "../Inc/remote.h"
+#include "../Inc/remote_head.h"
+#include<math.h>
 // #include "stm32f4xx_hal_uart.h"
 // #include "usart.h"
 /* ----------------------- Internal Data ----------------------------------- */

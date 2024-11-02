@@ -26,6 +26,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "remote_head.h"
 uint8_t rxBuffer[36u];
 uint8_t rx[15];
 uint8_t rxData[36u];
@@ -146,6 +147,8 @@ int main(void)
 
 
   HAL_CAN_ActivateNotification(&hcan1, CAN_IT_TX_MAILBOX_EMPTY);
+
+  // init_motor(50, 0);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -155,6 +158,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    // transmit_motor();
+    // HAL_Delay(1);
   }
   /* USER CODE END 3 */
 }

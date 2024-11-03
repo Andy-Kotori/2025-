@@ -74,7 +74,7 @@ void BMI088_accel_write() {
 
 void BMI088_WriteReg(uint8_t reg, uint8_t data) {
     uint8_t txdata[2];
-    txdata[0]=0x80|reg;
+    txdata[0]=reg;
     txdata[1]=data;
     HAL_SPI_Transmit(&hspi1, txdata, sizeof(txdata), 1000);
 }

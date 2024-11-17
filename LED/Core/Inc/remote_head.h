@@ -11,7 +11,9 @@ extern "C" {
 #endif
 
     void receive();
-    void transmit();
+    void init_motor(const float speed, const float angle);
+    void receive_motor();
+    void transmit_motor();
 
 #ifdef __cplusplus
 }

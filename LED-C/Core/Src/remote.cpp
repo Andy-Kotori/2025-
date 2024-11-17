@@ -1,9 +1,9 @@
 //
-// Created by hp on 24-10-9.
+// Created by hp on 24-11-15.
 //
 
 #include "../Inc/remote.h"
-#include "../Inc/remote_head.h"
+#include<cpp_head.h>
 #include<math.h>
 // #include "stm32f4xx_hal_uart.h"
 // #include "usart.h"
@@ -12,6 +12,7 @@ volatile unsigned char sbus_rx_buffer[2][RC_FRAME_LENGTH]; //double sbus rx buff
 static RC_Ctl_t RC_CtrlData;
 
 extern uint8_t rxData[36u];
+extern float remote_output[6];
 
 float Normalization_ch(uint16_t data) {
     uint16_t min=RC_CH_VALUE_MIN;
@@ -43,29 +44,29 @@ void RC_Ctl_t::RemoteDataProcess(uint8_t *pData)
     mouse.press_l = pData[12];
     mouse.press_r = pData[13];
     key.v = ((int16_t)pData[14]);// | ((int16_t)pData[15] << 8);
-    solved_data_.ch0=output[0]=Normalization_ch(rc.ch0);
-    solved_data_.ch1=output[1]=Normalization_ch(rc.ch1);
-    solved_data_.ch2=output[2]=Normalization_ch(rc.ch2);
-    solved_data_.ch3=output[3]=Normalization_ch(rc.ch3);
+    solved_data_.ch0=remote_output[0]=Normalization_ch(rc.ch0);
+    solved_data_.ch1=remote_output[1]=Normalization_ch(rc.ch1);
+    solved_data_.ch2=remote_output[2]=Normalization_ch(rc.ch2);
+    solved_data_.ch3=remote_output[3]=Normalization_ch(rc.ch3);
     if (rc.s1 == RC_SW_UP) {
         solved_data_.s1=UP;
-        output[4]=RC_SW_UP;
+        remote_output[4]=RC_SW_UP;
     } else if (rc.s1 == RC_SW_MID) {
         solved_data_.s1=MID;
-        output[4]=RC_SW_MID;
+        remote_output[4]=RC_SW_MID;
     } else if (rc.s1 == RC_SW_DOWN) {
         solved_data_.s1=DOWN;
-        output[4]=RC_SW_DOWN;
+        remote_output[4]=RC_SW_DOWN;
     }
     if (rc.s2 == RC_SW_UP) {
         solved_data_.s2=UP;
-        output[5]=RC_SW_UP;
+        remote_output[5]=RC_SW_UP;
     } else if (rc.s2 == RC_SW_MID) {
         solved_data_.s2=MID;
-        output[5]=RC_SW_MID;
+        remote_output[5]=RC_SW_MID;
     } else if (rc.s2 == RC_SW_DOWN) {
         solved_data_.s2=DOWN;
-        output[5]=RC_SW_DOWN;
+        remote_output[5]=RC_SW_DOWN;
     }
 }
 

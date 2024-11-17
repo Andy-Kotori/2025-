@@ -18,14 +18,18 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "can.h"
 #include "dma.h"
+#include "iwdg.h"
+#include "spi.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "../Inc/imu.h"
+#include "cpp_head.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -57,8 +61,17 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint8_t rxBuffer[10];
+
+uint8_t rxBuffer[36u]; // 遥控器生
 uint8_t txBuffer[10];
+float ACC[3];
+float GYRO[3];
+uint8_t rxData[36u]; // 遥控器生肉待处理copy
+float values[4];
+float remote_output[6]; // 遥控器解包熟
+uint8_t aData[8]; // 电机生肉
+
+
 /* USER CODE END 0 */
 
 /**
@@ -94,12 +107,43 @@ int main(void)
   MX_TIM6_Init();
   MX_TIM5_Init();
   MX_USART1_UART_Init();
+  MX_SPI1_Init();
+  // MX_IWDG_Init();
+  MX_USART3_UART_Init();
+  MX_CAN1_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim6);
   HAL_TIM_Base_Start_IT(&htim5);
-  HAL_TIM_PWM_Start_IT(&htim5, TIM_CHANNEL_2);
+  // HAL_TIM_PWM_Start_IT(&htim5, TIM_CHANNEL_2);
   // HAL_UART_Receive_IT(&huart1, rxBuffer, sizeof(rxBuffer));
-  HAL_UART_Receive_DMA(&huart1, rxBuffer, sizeof(rxBuffer));
+  // HAL_UART_Receive_DMA(&huart3, rxBuffer, 18u);
+  // HAL_CAN_Start(&hcan1);
+  // HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
+  // HAL_CAN_ActivateNotification(&hcan1, CAN_IT_TX_MAILBOX_EMPTY);
+  // BMI088_Init();
+  // BMI088_accel_write();
+  // BMI088_ACCEL_MODE();
+
+  CAN_FilterTypeDef canFilterConfig;
+  // CAN滤波器配�?
+  canFilterConfig.FilterBank = 0; // 选择滤波器银�?
+  canFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK; // 设置滤波器模式为ID掩码模式
+  canFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT; // 设置滤波器规模为32�?
+  canFilterConfig.FilterIdHigh = 0x0000; // 设置滤波器ID高字�?
+  canFilterConfig.FilterIdLow = 0x0000; // 设置滤波器ID低字�?
+  canFilterConfig.FilterMaskIdHigh = 0x0000; // 设置滤波器掩码高字节
+  canFilterConfig.FilterMaskIdLow = 0x0000; // 设置滤波器掩码低字节
+  canFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0; // 将滤波器分配给FIFO0
+  canFilterConfig.FilterActivation = ENABLE; // 启用滤波�?
+
+  HAL_CAN_ConfigFilter(&hcan1, &canFilterConfig);
+
+  HAL_CAN_Start(&hcan1);
+
+  HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
+
+  HAL_CAN_ActivateNotification(&hcan1, CAN_IT_TX_MAILBOX_EMPTY);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -107,6 +151,9 @@ int main(void)
   while (1)
   {
     // HAL_UART_Transmit_IT(&huart1, "txBuffer", 6);
+    // BMI088_accel_read();
+    // BMI088_gyro_read();
+    // HAL_Delay(50);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -131,8 +178,9 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 6;

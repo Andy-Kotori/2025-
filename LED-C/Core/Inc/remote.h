@@ -1,5 +1,5 @@
 //
-// Created by hp on 24-10-9.
+// Created by hp on 24-11-15.
 //
 
 #ifndef REMOTE_H
@@ -50,7 +50,6 @@ public:
     {
         uint16_t v=-1;
     }key;
-    float output[6];
     void RemoteDataProcess(uint8_t *pData);
 private:
     typedef enum RCSwitchState {
@@ -71,7 +70,5 @@ private:
 
     void Solve_Raw_Data();
 };
-
-
 
 #endif //REMOTE_H

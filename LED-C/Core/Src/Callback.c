@@ -11,6 +11,7 @@
 #include "can.h"
 #include "spi.h"
 #include "tim.h"
+#include "imu.h"
 
 extern uint8_t rxBuffer[36u];
 extern uint8_t txBuffer[10];
@@ -26,13 +27,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
         HAL_IWDG_Refresh(&hiwdg);
 
         HAL_GPIO_TogglePin(LED_G_GPIO_Port, LED_G_Pin);
-        HAL_UART_Receive_DMA(&huart3, rxBuffer, 18u);
-
+        // HAL_UART_Receive_DMA(&huart3, rxBuffer, 18u);
 
     }
     if (htim->Instance == TIM5) {
         // HAL_GPIO_TogglePin(LED_B_GPIO_Port, LED_B_Pin);
         HAL_UART_Receive_DMA(&huart3, rxBuffer, 18u);
+        BMI088_accel_read();
+        BMI088_gyro_read();
+
     }
 }
 

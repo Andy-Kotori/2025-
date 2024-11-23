@@ -70,6 +70,9 @@ uint8_t rxData[36u]; // 遥控器生肉待处理copy
 float values[4];
 float remote_output[6]; // 遥控器解包熟
 uint8_t aData[8]; // 电机生肉
+double pitch_acc;
+double pitch_gyro = 0;
+double roll_gyro = 0;
 
 
 /* USER CODE END 0 */
@@ -120,7 +123,7 @@ int main(void)
   // HAL_CAN_Start(&hcan1);
   // HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
   // HAL_CAN_ActivateNotification(&hcan1, CAN_IT_TX_MAILBOX_EMPTY);
-  // BMI088_Init();
+  BMI088_Init();
   // BMI088_accel_write();
   // BMI088_ACCEL_MODE();
 

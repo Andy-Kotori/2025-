@@ -35,7 +35,6 @@ public:
     void setSpeed(const float& speed);
     void handle();
 
-private:
     Type_e type_;   // 型号
     ControlMethod_e method_;
     float ratio_;

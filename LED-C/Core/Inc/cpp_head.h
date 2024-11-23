@@ -12,7 +12,7 @@ extern "C" {
     void receive();
     void init_motor(const float speed, const float angle);
     void receive_motor(int motor_id);
-    void transmit_motor();
+    void transmit_motor(int mode);
     void shutDown(int motor_id);
     void control();
 

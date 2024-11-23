@@ -40,8 +40,8 @@ void motor::reset() {
 }
 
 void motor::rxCallback() {
-    fdb_angle = values[0];
-    fdb_speed = values[1];
+    fdb_angle = values[0]; // motor fdb control
+    fdb_speed = values[1]; // motor fdb control
 }
 
 void motor::setAngle(const float &angle) {
@@ -83,10 +83,14 @@ void receive_motor(int motor_id) {
     }
 }
 
-void transmit_motor() {
+void transmit_motor(int mode) {
 
-    motor_p.handle();
-    motor_r.handle();
+    if (mode == 0) {
+        motor_r.handle();
+    } else if (mode == 1) {
+        motor_p.handle();
+        motor_r.handle();
+    }
 
     CAN_TxHeaderTypeDef TxHeader;
     uint8_t TxData[8] = { 0 };

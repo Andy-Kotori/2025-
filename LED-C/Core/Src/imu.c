@@ -3,6 +3,7 @@
 //
 
 #include "../Inc/imu.h"
+#include <math.h>
 #include "main.h"
 #include "spi.h"
 
@@ -11,6 +12,10 @@ extern float GYRO[3];
 uint8_t rxdata_acc[7];
 uint8_t rxdata_gyro[6];
 uint8_t mode[8];
+extern double pitch_acc;
+extern double pitch_gyro;
+extern double roll_gyro;
+extern int scalar_max;
 
 // 片选
 void BMI088_ACCEL_NS_L(void)
@@ -39,9 +44,9 @@ void BMI088_accel_read() {
     int16_t ACC_X = ((uint16_t)rxdata_acc[2] << 8) | (uint16_t)rxdata_acc[1];
     int16_t ACC_Y = ((uint16_t)rxdata_acc[4] << 8) | (uint16_t)rxdata_acc[3];
     int16_t ACC_Z = ((uint16_t)rxdata_acc[6] << 8) | (uint16_t)rxdata_acc[5];
-    ACC[0] = (float)((int16_t)ACC_X) / 32768.0f * 6.0f;
-    ACC[1] = (float)((int16_t)ACC_Y) / 32768.0f * 6.0f;
-    ACC[2] = (float)((int16_t)ACC_Z) / 32768.0f * 6.0f;
+    ACC[0] = -(float)((int16_t)ACC_X) / 32768.0f * 6.0f;
+    ACC[1] = -(float)((int16_t)ACC_Y) / 32768.0f * 6.0f;
+    ACC[2] = -(float)((int16_t)ACC_Z) / 32768.0f * 6.0f;
     BMI088_ACCEL_NS_H();
 }
 
@@ -108,4 +113,15 @@ void BMI088_Init(void) {
     BMI088_WriteReg(0x7D, 0x04); // Write 0x04 to ACC_PWR_CTRL(0x7D)
     HAL_Delay(1);
     BMI088_ACCEL_NS_H();
+}
+
+void angleSolve_acc(float* acc) {
+    pitch_acc = -atan(acc[0] / sqrt(acc[1] * acc[1] + acc[2] * acc[2])) * 180 / 3.14159265358979323846;
+}
+
+void angleSolve_gyro(float* gyro) {
+    double pitch = pitch_gyro;
+    double roll = roll_gyro;
+    pitch_gyro += (cos(roll) * (double)gyro[1] - sin(roll) * (double)gyro[2]) / (scalar_max + 1);
+    roll_gyro += ((double)gyro[0] + (sin(pitch) * sin(roll) / cos(pitch)) * (double)gyro[1] + (cos(roll) * sin(pitch) / cos(pitch)) * (double)gyro[2]) / (scalar_max + 1);
 }

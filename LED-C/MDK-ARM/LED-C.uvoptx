@@ -193,7 +193,17 @@
         <Ww>
           <count>8</count>
           <WinNumber>1</WinNumber>
-          <ItemText>rxdata_acc</ItemText>
+          <ItemText>pitch_acc</ItemText>
+        </Ww>
+        <Ww>
+          <count>9</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>pitch_gyro</ItemText>
+        </Ww>
+        <Ww>
+          <count>10</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>roll_gyro</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

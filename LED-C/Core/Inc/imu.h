@@ -14,5 +14,7 @@ void BMI088_gyro_read();
 void BMI088_accel_write();
 void BMI088_Init(void);
 void BMI088_ACCEL_MODE();
+void angleSolve_acc(float* acc);
+void angleSolve_gyro(float* gyro);
 
 #endif //IMU_H

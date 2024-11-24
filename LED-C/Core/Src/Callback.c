@@ -19,6 +19,14 @@ extern uint8_t rxData[36u];
 CAN_RxHeaderTypeDef Header;
 extern float values[4];
 extern uint8_t aData[8];
+extern float ACC[3];
+extern float GYRO[3];
+extern double pitch_acc;
+extern double pitch_gyro;
+extern double roll_gyro;
+
+int scalar_IMU = 0;
+extern int scalar_max;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
@@ -33,8 +41,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     if (htim->Instance == TIM5) {
         // HAL_GPIO_TogglePin(LED_B_GPIO_Port, LED_B_Pin);
         HAL_UART_Receive_DMA(&huart3, rxBuffer, 18u);
-        BMI088_accel_read();
-        BMI088_gyro_read();
+        if (scalar_IMU < scalar_max) {
+            scalar_IMU++;
+        } else {
+            BMI088_accel_read();
+            BMI088_gyro_read();
+            angleSolve_acc(ACC);
+            angleSolve_gyro(GYRO);
+            scalar_IMU = 0;
+        }
 
     }
 }

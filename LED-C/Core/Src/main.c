@@ -73,7 +73,7 @@ uint8_t aData[8]; // 电机生肉
 double pitch_acc;
 double pitch_gyro = 0;
 double roll_gyro = 0;
-
+int scalar_max = 49;
 
 /* USER CODE END 0 */
 

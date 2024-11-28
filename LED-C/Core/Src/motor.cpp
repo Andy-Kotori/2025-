@@ -7,10 +7,22 @@
 // #include <sys/time.h>
 #include <cpp_head.h>
 #include "PID.h"
+#include "remote.h"
+#include "math.h"
 
 extern float values[4];
 extern motor motor_p;
 extern motor motor_r;
+extern float remote_output[6];
+extern float ACC[3];
+extern float GYRO[3];
+extern double pitch_acc;
+extern double roll_acc;
+extern double pitch_gyro;
+extern double roll_gyro;
+extern double yaw_gyro;
+extern int scalar_max;
+float k = 0.001;
 
 motor::motor(const Type_e &type, const ControlMethod_e& method, PID *spid, PID *ppid) {
     type_ = type;
@@ -40,8 +52,13 @@ void motor::reset() {
 }
 
 void motor::rxCallback() {
-    fdb_angle = values[0]; // motor fdb control
-    fdb_speed = values[1]; // motor fdb control
+    if (remote_output[4] == RC_SW_UP) {
+        fdb_angle = values[0]; // motor fdb control
+        fdb_speed = values[1]; // motor fdb control
+    } else if (remote_output[4] == RC_SW_MID) {
+        fdb_angle = (1 - k) * (float)pitch_gyro + k * (float)pitch_acc;
+        fdb_speed = (float)(cos(roll_gyro / 180 * 3.14159265358979323846) * (double)GYRO[1] - sin(roll_gyro/ 180 * 3.14159265358979323846) * (double)GYRO[2]);
+    }
 }
 
 void motor::setAngle(const float &angle) {
@@ -90,6 +107,8 @@ void transmit_motor(int mode) {
     } else if (mode == 1) {
         motor_p.handle();
         motor_r.handle();
+    } else if (mode == 2){
+        motor_p.handle();
     }
 
     CAN_TxHeaderTypeDef TxHeader;
@@ -116,6 +135,11 @@ void transmit_motor(int mode) {
 
 void shutDown(int motor_id) {
     if (motor_id == 1) {
+
+        pitch_gyro = 0;
+        roll_gyro = 0;
+        yaw_gyro = 0;
+
         motor_p.reset();
 
         CAN_TxHeaderTypeDef TxHeader;
@@ -138,6 +162,11 @@ void shutDown(int motor_id) {
             Error_Handler();
         }
     } else if (motor_id == 2) {
+
+        pitch_gyro = 0;
+        roll_gyro = 0;
+        yaw_gyro = 0;
+
         motor_r.reset();
 
         CAN_TxHeaderTypeDef TxHeader;

@@ -71,9 +71,11 @@ float values[4];
 float remote_output[6]; // 遥控器解包熟
 uint8_t aData[8]; // 电机生肉
 double pitch_acc;
+double roll_acc;
 double pitch_gyro = 0;
 double roll_gyro = 0;
-int scalar_max = 49;
+double yaw_gyro = 0;
+int scalar_max = 3;
 
 /* USER CODE END 0 */
 

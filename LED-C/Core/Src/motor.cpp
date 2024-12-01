@@ -24,7 +24,8 @@ extern double yaw_gyro;
 extern int scalar_max;
 float k = 0.001;
 
-motor::motor(const Type_e &type, const ControlMethod_e& method, PID *spid, PID *ppid) {
+motor::motor(const Type_e &type, const ControlMethod_e& method, PID *spid, PID *ppid, int id) {
+    id_ = id;
     type_ = type;
     method_ = method;
     spid_ = spid;
@@ -56,8 +57,13 @@ void motor::rxCallback() {
         fdb_angle = values[0]; // motor fdb control
         fdb_speed = values[1]; // motor fdb control
     } else if (remote_output[4] == RC_SW_MID) {
-        fdb_angle = (1 - k) * (float)pitch_gyro + k * (float)pitch_acc;
-        fdb_speed = (float)(cos(roll_gyro / 180 * 3.14159265358979323846) * (double)GYRO[1] - sin(roll_gyro/ 180 * 3.14159265358979323846) * (double)GYRO[2]);
+        if (this->id_ == 1) {
+            fdb_angle = (1 - k) * (float)pitch_gyro + k * (float)pitch_acc;
+            fdb_speed = (float)(cos(roll_gyro / 180 * 3.14159265358979323846) * (double)GYRO[1] - sin(roll_gyro/ 180 * 3.14159265358979323846) * (double)GYRO[2]);
+        } else if (this->id_ == 3) {
+            fdb_angle = (float)yaw_gyro;
+            fdb_speed = (float)(sin(roll_gyro / 180 * 3.14159265358979323846) / cos(pitch_gyro / 180 * 3.14159265358979323846) * (double)GYRO[1] + cos(roll_gyro/ 180 * 3.14159265358979323846) / cos(pitch_gyro / 180 * 3.14159265358979323846) * (double)GYRO[2]);
+        }
     }
 }
 
@@ -109,6 +115,7 @@ void transmit_motor(int mode) {
         motor_r.handle();
     } else if (mode == 2){
         motor_p.handle();
+        motor_r.handle();
     }
 
     CAN_TxHeaderTypeDef TxHeader;

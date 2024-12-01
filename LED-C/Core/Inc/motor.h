@@ -11,6 +11,8 @@
 class motor {
 public:
 
+    int id_;
+
     int16_t I_out;
 
     // 电机型号
@@ -28,7 +30,7 @@ public:
         // TORQUE,          // 力矩控制
       } ControlMethod_e;
 
-    motor(const Type_e& type, const ControlMethod_e& method, PID* spid, PID* ppid);
+    motor(const Type_e& type, const ControlMethod_e& method, PID* spid, PID* ppid, int id);
     void reset();
     void rxCallback();
     void setAngle(const float& angle);

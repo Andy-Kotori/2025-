@@ -15,6 +15,7 @@ float Offset_p = 227;
 float Amplitude_r = 60;
 float Offset_r = 65;
 float Offset_p_imu = 0;
+float Offset_r_imu = 0;
 
 PID spid_p(50, 0, 0, 4000, 4000);
 PID ppid_p(30, 1.25, 30, 10, 360);
@@ -22,8 +23,8 @@ PID ppid_p(30, 1.25, 30, 10, 360);
 // PID ppid_p(40, 2.3, 15, 20, 8000); // imu
 PID spid_r(50, 0.0, 0, 4000, 25000);
 PID ppid_r(25, 3, 50, 8, 8000);
-motor motor_p(motor::Type_e::M6002, motor::ControlMethod_e::POSITION_SPEED, &spid_p, &ppid_p);
-motor motor_r(motor::Type_e::M6002, motor::ControlMethod_e::POSITION_SPEED, &spid_r, &ppid_r);
+motor motor_p(motor::Type_e::M6002, motor::ControlMethod_e::POSITION_SPEED, &spid_p, &ppid_p, 1);
+motor motor_r(motor::Type_e::M6002, motor::ControlMethod_e::POSITION_SPEED, &spid_r, &ppid_r, 3);
 
 
 int16_t feedFoward(float angle) {
@@ -58,6 +59,9 @@ void control() {
             float remote_input_p = remote_output[3];
             float target_angle_p = Amplitude_p * remote_input_p + Offset_p_imu;
             motor_p.setAngle(target_angle_p);
+            float remote_input_r = remote_output[2];
+            float target_angle_r = Amplitude_r * remote_input_r + Offset_r_imu;
+            motor_r.setAngle(target_angle_r);
             transmit_motor(2);
         }
     }

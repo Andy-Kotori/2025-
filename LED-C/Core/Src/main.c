@@ -70,11 +70,11 @@ uint8_t rxData[36u]; // 遥控器生肉待处理copy
 float values[4];
 float remote_output[6]; // 遥控器解包熟
 uint8_t aData[8]; // 电机生肉
-double pitch_acc;
-double roll_acc;
-double pitch_gyro = 0;
-double roll_gyro = 0;
-double yaw_gyro = 0;
+float pitch_acc;
+float roll_acc;
+float pitch_gyro = 0;
+float roll_gyro = 0;
+float yaw_gyro = 0;
 int scalar_max = 3;
 
 /* USER CODE END 0 */

@@ -17,10 +17,10 @@ float Offset_r = 65;
 float Offset_p_imu = 0;
 float Offset_r_imu = 0;
 
-PID spid_p(50, 0, 0, 4000, 4000);
-PID ppid_p(30, 1.25, 30, 10, 360);
-// PID spid_p(25, 0, 0, 4000, 4000); // imu
-// PID ppid_p(40, 2.3, 15, 20, 8000); // imu
+// PID spid_p(50, 0, 0, 4000, 4000);
+// PID ppid_p(30, 1.25, 30, 10, 360);
+PID spid_p(25, 0, 0, 4000, 4000); // imu
+PID ppid_p(40, 2.3, 15, 20, 8000); // imu
 PID spid_r(50, 0.0, 0, 4000, 25000);
 PID ppid_r(25, 3, 50, 8, 8000);
 motor motor_p(motor::Type_e::M6002, motor::ControlMethod_e::POSITION_SPEED, &spid_p, &ppid_p, 1);

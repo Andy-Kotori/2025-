@@ -16,11 +16,11 @@ extern motor motor_r;
 extern float remote_output[6];
 extern float ACC[3];
 extern float GYRO[3];
-extern double pitch_acc;
-extern double roll_acc;
-extern double pitch_gyro;
-extern double roll_gyro;
-extern double yaw_gyro;
+extern float pitch_acc;
+extern float roll_acc;
+extern float pitch_gyro;
+extern float roll_gyro;
+extern float yaw_gyro;
 extern int scalar_max;
 float k = 0.001;
 

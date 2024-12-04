@@ -21,9 +21,11 @@ extern float values[4];
 extern uint8_t aData[8];
 extern float ACC[3];
 extern float GYRO[3];
-extern double pitch_acc;
-extern double pitch_gyro;
-extern double roll_gyro;
+extern float pitch_acc;
+extern float roll_acc;
+extern float pitch_gyro;
+extern float roll_gyro;
+extern float yaw_gyro;
 
 int scalar_IMU = 0;
 extern int scalar_max;

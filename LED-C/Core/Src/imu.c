@@ -12,12 +12,17 @@ extern float GYRO[3];
 uint8_t rxdata_acc[7];
 uint8_t rxdata_gyro[6];
 uint8_t mode[8];
-extern double pitch_acc;
-extern double roll_acc;
-extern double pitch_gyro;
-extern double roll_gyro;
-extern double yaw_gyro;
+extern float pitch_acc;
+extern float roll_acc;
+extern float pitch_gyro;
+extern float roll_gyro;
+extern float yaw_gyro;
+float delta_pitch;
+float delta_roll;
 extern int scalar_max;
+extern float k;
+float pitch_rad;
+float roll_rad;
 
 // 片选
 void BMI088_ACCEL_NS_L(void)
@@ -118,15 +123,21 @@ void BMI088_Init(void) {
 }
 
 void angleSolve_acc(float* acc) {
-    pitch_acc = atan(acc[0] / sqrt(acc[1] * acc[1] + acc[2] * acc[2])) * 180 / 3.14159265358979323846;
-    roll_acc = atan(acc[1] / acc[2]) * 180 / 3.14159265358979323846;
+    pitch_acc = (float)atan2f(acc[0] , sqrtf(acc[1] * acc[1] + acc[2] * acc[2])) * 180 / 3.1415;
+    roll_acc = (float)atan2f(-acc[1], acc[2]) * 180 / 3.1415;
+    if (roll_acc > 0) {
+        roll_acc -= 180;
+    } else if (roll_acc < 0) {
+        roll_acc += 180;
+    }
 }
 
 void angleSolve_gyro(float* gyro) {
-    double pitch_rad = pitch_gyro / 180 * 3.14159265358979323846;
-    double roll_rad = roll_gyro / 180 * 3.14159265358979323846;
-    double yaw_rad = yaw_gyro / 180 * 3.14159265358979323846;
-    pitch_gyro += (cos(roll_rad) * (double)gyro[1] - sin(roll_rad) * (double)gyro[2]) * (scalar_max + 1) / 1000;
-    roll_gyro += ((double)gyro[0] + (sin(pitch_rad) * sin(roll_rad) / cos(pitch_rad)) * (double)gyro[1] + (cos(roll_rad) * sin(pitch_rad) / cos(pitch_rad)) * (double)gyro[2]) * (scalar_max + 1) / 1000;
-    yaw_gyro += (sin(roll_rad) / cos(pitch_rad) * (double)gyro[1] + cos(roll_rad) / cos(pitch_rad) * (double)gyro[2]) * (scalar_max + 1) / 1000;
+    pitch_rad = pitch_gyro / 180 * 3.1415;
+    roll_rad = roll_gyro / 180 * 3.1415;
+    delta_pitch = (cosf(roll_rad) * gyro[1] - sinf(roll_rad) * gyro[2]) * (float)(scalar_max + 1) / 1000;
+    delta_roll = (gyro[0] + (sinf(pitch_rad) * sinf(roll_rad) / cosf(pitch_rad)) * gyro[1] + (cosf(roll_rad) * sinf(pitch_rad) / cosf(pitch_rad)) * gyro[2]) * (float)(scalar_max + 1) / 1000;
+    pitch_gyro = k * pitch_acc + (1.f - k) * pitch_gyro + delta_pitch;
+    roll_gyro = k * roll_acc + (1.f - k) * roll_gyro - delta_roll;
+    yaw_gyro += (sinf(roll_rad) / cosf(pitch_rad) * gyro[1] + cosf(roll_rad) / cosf(pitch_rad) * gyro[2]) * (float)(scalar_max + 1) / 1000;
 }

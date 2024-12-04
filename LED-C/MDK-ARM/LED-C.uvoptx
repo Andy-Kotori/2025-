@@ -188,67 +188,57 @@
         <Ww>
           <count>7</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ACC_X</ItemText>
+          <ItemText>pitch_acc</ItemText>
         </Ww>
         <Ww>
           <count>8</count>
           <WinNumber>1</WinNumber>
-          <ItemText>pitch_acc</ItemText>
+          <ItemText>pitch_gyro</ItemText>
         </Ww>
         <Ww>
           <count>9</count>
           <WinNumber>1</WinNumber>
-          <ItemText>pitch_gyro</ItemText>
+          <ItemText>roll_gyro</ItemText>
         </Ww>
         <Ww>
           <count>10</count>
           <WinNumber>1</WinNumber>
-          <ItemText>roll_gyro</ItemText>
+          <ItemText>roll_acc</ItemText>
         </Ww>
         <Ww>
           <count>11</count>
           <WinNumber>1</WinNumber>
-          <ItemText>roll_acc</ItemText>
+          <ItemText>yaw_gyro</ItemText>
         </Ww>
         <Ww>
           <count>12</count>
           <WinNumber>1</WinNumber>
-          <ItemText>yaw_gyro</ItemText>
+          <ItemText>k</ItemText>
         </Ww>
         <Ww>
           <count>13</count>
           <WinNumber>1</WinNumber>
-          <ItemText>k</ItemText>
+          <ItemText>delta_pitch</ItemText>
         </Ww>
         <Ww>
           <count>14</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\LED_C\../Core/Src/control.cpp\motor_p.ppid_-&gt;kd_</ItemText>
+          <ItemText>delta_roll</ItemText>
         </Ww>
         <Ww>
           <count>15</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\LED_C\../Core/Src/control.cpp\motor_p.ppid_-&gt;kd_</ItemText>
+          <ItemText>pitch_rad</ItemText>
         </Ww>
         <Ww>
           <count>16</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\LED_C\../Core/Src/control.cpp\motor_p.ppid_-&gt;ki_</ItemText>
+          <ItemText>roll_rad</ItemText>
         </Ww>
         <Ww>
           <count>17</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\LED_C\../Core/Src/control.cpp\motor_p.ppid_-&gt;i_max_</ItemText>
-        </Ww>
-        <Ww>
-          <count>18</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>\\LED_C\../Core/Src/control.cpp\motor_p.ppid_-&gt;kd_</ItemText>
-        </Ww>
-        <Ww>
-          <count>19</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>\\LED_C\../Core/Src/control.cpp\motor_p.ppid_-&gt;out_max_</ItemText>
+          <ItemText>scalar_max</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

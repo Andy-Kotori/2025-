@@ -22,7 +22,7 @@ extern float pitch_gyro;
 extern float roll_gyro;
 extern float yaw_gyro;
 extern int scalar_max;
-float k = 0.001;
+float k = 0.007;
 
 motor::motor(const Type_e &type, const ControlMethod_e& method, PID *spid, PID *ppid, int id) {
     id_ = id;
